@@ -1,17 +1,25 @@
 import time
-from selenium import webdriver
+
+import pyautogui
+import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 
+ID = "id"
+PASSWORD = "password"
 
-browser = webdriver.Chrome()
+driver = uc.Chrome()
 url = "https://somcloud.com/user/login"
-browser.get(url)
+driver.get(url)
+driver.find_element(By.CSS_SELECTOR, ".g_id_signin").click()
+driver.switch_to.window(driver.window_handles[1])
 
-browser.find_element(By.CSS_SELECTOR, ".g_id_signin").click()
-time.sleep(5)
+time.sleep(2)
+pyautogui.write(ID)
+pyautogui.press("enter")
+time.sleep(3)
+pyautogui.write(PASSWORD)
+pyautogui.press("enter")
+print(driver.window_handles[-1])
 
-browser.switch_to.window(browser.window_handles[1])
-time.sleep(5)
-
-elem = browser.find_element(By.CSS_SELECTOR, "#identifierId").send_keys("id")
-# browser.find_element(By.CSS_SELECTOR, ".VfPpkd-RLmnJb").click()
+print(driver.page_source)
