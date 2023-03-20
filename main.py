@@ -4,6 +4,7 @@ import pyautogui
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 ID = "id"
 PASSWORD = "pw"
@@ -30,49 +31,37 @@ array = []
 for i in range(1):
     driver.find_element(By.XPATH, f'//*[@id="snb_middle"]/div[{i + 1}]/div/div').click()
     time.sleep(1)
+    project_idx = 2 if i else 1
+    project_div_idx = f"div[{i}]/div" if i else ""
     fold_count = driver.find_element(
-        By.XPATH, f'//*[@id="snb_middle"]/div[{i + 1}]/div/div/span[2]'
+        By.XPATH,
+        f'//*[@id="snb_middle"]/div[{project_idx}]/{project_div_idx}/div/span[2]',
+    )
+    project_name = driver.find_element(
+        By.XPATH,
+        f'//*[@id="snb_middle"]/div[{project_idx}]/{project_div_idx}/div/span[1]',
     )
     for j in range(int(fold_count.text)):
+        item_selected_idx = f"div[{i}]" if i else ""
         driver.find_element(
-            By.XPATH, f'//*[@id="snb_middle"]/div[{i + 1}]/div/ul/li[{j + 1}]'
+            By.XPATH,
+            f'//*[@id="snb_middle"]/div[{i + 1}]/{item_selected_idx}/div/ul/li[{j + 1}]',
         ).click()
         time.sleep(1)
-        date = driver.find_element(
-            By.XPATH, f'//*[@id="container"]/div[2]/div[1]/div[1]/div[1]/span[2]'
+        date = WebDriverWait(driver, 4).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="container"]/div[2]/div[1]/div[1]/div[1]/span[2]')
+            )
         )
-        content = driver.find_element(By.XPATH, '//*[@id="editor"]')
+        content = WebDriverWait(driver, 4).until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="editor"]'))
+        )
 
-        array.append([i + 1, date.text, content.text])
-        time.sleep(1)
+        array.append([project_name.text, j + 1, date.text, content.text])
+
     print(array)
 
-
-# //*[@id="snb_middle"]/div[1]/div/div/span[2]
-# //*[@id="snb_middle"]/div[2]/div[1]/div/div/span[2]
-# //*[@id="snb_middle"]/div[2]/div[2]/div/div/span[2]
-# //*[@id="snb_middle"]/div[2]/div[3]/div/div/span[2]
-# elem = driver.find_element(By.XPATH, '//*[@id="snb_middle"]/div[1]/div/div')
-# elem.click()
-
-# elem = driver.find_element(By.XPATH, '//*[@id="snb_middle"]/div[1]/div/ul/li[1]')
-# elem.click()
-# time.sleep(2)
-# array = []
-# fold_count = driver.find_element(
-#     By.XPATH, '//*[@id="snb_middle"]/div[1]/div/div/span[2]'
-# )
-# print(fold_count.text)
-
-# date = driver.find_element(
-#     By.XPATH, '//*[@id="container"]/div[2]/div[1]/div[1]/div[1]/span[2]'
-# )
-# print(date.text)
-
-# content = driver.find_element(By.XPATH, '//*[@id="editor"]')
-# print(content.text)
 while True:
     pass
-
 
 # print(driver.page_source)
