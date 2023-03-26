@@ -1,5 +1,6 @@
 import time
 
+import pandas as pd
 import pyautogui
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
@@ -71,13 +72,5 @@ for i in range(27):
 
         array.append([project_name.text, j + 1, date.text, content.text])
 
-    # print(array)
-
-with open("temp.txt", "w", encoding="utf8") as f:
-    for x in range(len(array)):
-        f.write(f"{array[x][0]} - {array[x][1]}\n{array[x][2]}\n{array[x][3]}\n")
-
-while True:
-    pass
-
-# print(driver.page_source)
+df = pd.DataFrame(array)
+df.to_excel("som.xlsx", index=False, header=False)
